@@ -146,6 +146,7 @@ export default {
   data() {
     return {
       eduTeachers: [],
+      //讲师对象，在编辑表单中。
       eduTeacher: {},
       // eduTeacher: {
       //   id: "",
@@ -156,7 +157,7 @@ export default {
       //   gmtCreate: "",
       // },
       TeacherQuery: {
-        name: '',
+        name: "",
         level: null,
         time: [],
       },
@@ -165,12 +166,14 @@ export default {
         pageSize: 10,
         pageString: null,
       },
-      deletePage: 0,
+      //用于封装TeacherQuery，pageInfo传到后端。前端带条件分页查询和查询所有的分页共用一个table组件。
       teacherQueryResult: [],
+      deletePage: 0,
       conditional: false,
       total: 100,
       dialogFormVisible: false,
       formLabelWidth: "120px",
+      //批量删除时，用于封装id。
       eduTeacherIds: [],
       //eduTeacherIdList: [],
     };
@@ -314,7 +317,7 @@ export default {
     //重置按钮
     reset() {
       this.TeacherQuery = {
-        name: '',
+        name: "",
         level: null,
         time: [],
       };
