@@ -147,16 +147,16 @@ export default {
     return {
       eduTeachers: [],
       eduTeacher: {
-        id: "",
-        name: "",
-        intro: "",
-        career: "",
-        level: "",
-        gmtCreate: "",
+        // id: "",
+        // name: "",
+        // intro: "",
+        // career: "",
+        // level: '',
+        // gmtCreate: "",
       },
       TeacherQuery: {
-        name: "",
-        level: "",
+        name: '',
+        level: null,
         time: [],
       },
       pageInfo: {
@@ -313,8 +313,8 @@ export default {
     //重置按钮
     reset() {
       this.TeacherQuery = {
-        name: "",
-        level: "",
+        name: '',
+        level: null,
         time: [],
       };
       this.pageInfo = {
