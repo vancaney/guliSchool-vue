@@ -26,7 +26,7 @@
       </el-form-item>
 
       <el-form-item label="课程简介">
-        <el-input v-model="CourseInfo.description" type="extratext"></el-input>
+        <el-input v-model="CourseInfo.description"></el-input>
       </el-form-item>
 
       <el-form-item label="课时价格">
