@@ -146,14 +146,15 @@ export default {
   data() {
     return {
       eduTeachers: [],
-      eduTeacher: {
-        // id: "",
-        // name: "",
-        // intro: "",
-        // career: "",
-        // level: '',
-        // gmtCreate: "",
-      },
+      eduTeacher: {},
+      // eduTeacher: {
+      //   id: "",
+      //   name: "",
+      //   intro: "",
+      //   career: "",
+      //   level: '',
+      //   gmtCreate: "",
+      // },
       TeacherQuery: {
         name: '',
         level: null,
@@ -195,7 +196,7 @@ export default {
         .then((res) => {
           this.eduTeachers = res.data.rows;
           this.total = res.data.total;
-          console.log(res.data);
+          //console.log(res.data);
         })
         .catch((error) => {
           console.log(error);
@@ -252,7 +253,7 @@ export default {
           if (res.code == 20000) {
             this.$message.success(res.message);
             this.teacherListByPage();
-            console.log(res);
+            //console.log(res);
           }
         })
         .catch((error) => {
@@ -336,7 +337,7 @@ export default {
       }).then(() => {
         let val = this.eduTeacherIds; //选中的值
         let eduTeacherIdList = [];
-        console.log(val);
+        //console.log(val);
         if (val) {
           for (let i = 0; i < val.length; i++) {
             //console.log(val[i].id);
