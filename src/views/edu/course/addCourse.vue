@@ -14,8 +14,24 @@
 
     <el-form label-width="120px">
       <el-form-item label="课程标题">
-        <el-input v-model="CourseInfo.title" placeholder="实例: 机器学习项目课: 从基础到搭建项目课程。专业名称注意大小写"></el-input>
+        <el-input
+          v-model="CourseInfo.title"
+          placeholder="实例: 机器学习项目课: 从基础到搭建项目课程。专业名称注意大小写"
+        ></el-input>
       </el-form-item>
+
+      <el-form-item label="课程讲师">
+        <el-select v-model="CourseInfo.teacherId" filterable placeholder="请选择">
+        <el-option
+          v-for="eduTeacher in eduTeacherList"
+          :key="eduTeacher.name"
+          :label="eduTeacher.name"
+          :value="eduTeacher.id"
+        >
+        </el-option>
+      </el-select>
+      </el-form-item>
+      
 
       <el-form-item label="总课时">
         <el-input-number
@@ -30,10 +46,7 @@
       </el-form-item>
 
       <el-form-item label="课时价格">
-        <el-input-number
-          v-model="CourseInfo.price"
-          :min="1"
-        ></el-input-number>
+        <el-input-number v-model="CourseInfo.price" :min="1"></el-input-number>
       </el-form-item>
 
       <el-form-item>
@@ -50,23 +63,54 @@
 </template>
 
 <script>
+import course from "@/api/edu/course/course";
+import teacher from "@/api/edu/teacher/teacher";
 export default {
   data() {
     return {
       CourseInfo: {
-        title: '',
+        title: "",
         lessonNum: 1,
-        description: '',
-        price: 1
+        description: "",
+        price: 1,
       },
+      //接受所有讲师
+      eduTeacherList: [],
+      name: '',
       saveBtnDisabled: false,
     };
   },
   methods: {
+    allEduTeacherList(){
+      teacher.getEduteacherList()
+      .then(res => {
+        this.eduTeacherList = res.data.eduTeacherList;
+        //console.log(res);
+      })
+      .catch(error => {
+        console.log(error);
+      })
+    },
+    addCourseInfo(CourseInfo) {
+      course
+        .addCourseInfo(CourseInfo)
+        .then((res) => {
+          this.$message({
+            type: "success",
+            message: "添加课程信息成功",
+          });
+          this.$router.push({ path: "/course/chapter/" + res.data.id });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     next() {
-      this.$router.push({ path: "/course/chapter/1" });
+      this.addCourseInfo(this.CourseInfo);
     },
   },
-  mounted: function () {},
+  mounted: function () {
+    this.allEduTeacherList();
+  },
 };
 </script>

@@ -52,5 +52,11 @@ export default {
       method: 'post',
       data: eduTeacherIds
     })
+  },
+  getEduteacherList(){
+    return request({
+      url: `/eduTeacher/eduTeacherList`,
+      method: 'get'
+    })
   }
 }
