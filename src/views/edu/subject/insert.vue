@@ -33,7 +33,6 @@
         </el-upload>
       </el-form-item>
     </el-form>
-
     <!-- <div slot="tip" class="el-upload__tip">只能上excel传文件</div> -->
   </div>
 </template>

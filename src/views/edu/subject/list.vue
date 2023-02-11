@@ -18,13 +18,7 @@ import subject from "@/api/edu/subject/subject";
 export default {
   data() {
     return {
-      data: [
-        {
-          id: "",
-          title: "",
-          children: [{}],
-        },
-      ],
+      data: [],
       filterText: "",
       defaultProps: {
         children: "children",
@@ -44,21 +38,19 @@ export default {
         .getAllSubject()
         .then((res) => {
           this.data = res.data.data;
-          //console.log(this.data);
+          //console.log(res.data);
         })
         .catch((error) => {
           console.log(error);
         });
     },
     filterNode(value, data) {
-      //console.log(value);
-      //console.log(data);
       if (!value) return true;
       return data.title.toLowerCase().indexOf(value) !== -1;
     },
-    // handleNodeClick(data) {
-    //     console.log(data);
-    //   }
+    handleNodeClick(data) {
+      console.log(data);
+    },
   },
   mounted: function () {
     this.getSubjectList();

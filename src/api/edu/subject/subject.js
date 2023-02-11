@@ -8,4 +8,10 @@ export default {
             method: 'get'
         })
     },
+    getTwoLevelFromOneLevel(id){
+        return request({
+            url: `/eduSubject/getTwoLevelFromOneLevel/${id}`,
+            method: 'get'
+        })
+    }
 }

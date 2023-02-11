@@ -20,18 +20,43 @@
         ></el-input>
       </el-form-item>
 
-      <el-form-item label="课程讲师">
-        <el-select v-model="CourseInfo.teacherId" filterable placeholder="请选择">
-        <el-option
-          v-for="eduTeacher in eduTeacherList"
-          :key="eduTeacher.name"
-          :label="eduTeacher.name"
-          :value="eduTeacher.id"
+      <el-form-item label="封面">
+        <el-upload
+          name="file"
+          class="avatar-uploader"
+          :action="BASE_API + '/eduoss/file'"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
         >
-        </el-option>
-      </el-select>
+          <img v-if="CourseInfo.cover" :src="CourseInfo.cover" class="avatar" />
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
       </el-form-item>
-      
+
+      <el-form-item label="课程分类">
+        <el-cascader
+          :options="data"
+          @change="handleChange"
+          :props="defaultProps"
+        ></el-cascader>
+      </el-form-item>
+
+      <el-form-item label="课程讲师">
+        <el-select
+          v-model="CourseInfo.teacherId"
+          filterable
+          placeholder="请选择"
+        >
+          <el-option
+            v-for="eduTeacher in eduTeacherList"
+            :key="eduTeacher.name"
+            :label="eduTeacher.name"
+            :value="eduTeacher.id"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
 
       <el-form-item label="总课时">
         <el-input-number
@@ -62,34 +87,117 @@
   </div>
 </template>
 
+<style>
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
+}
+</style>
+
 <script>
 import course from "@/api/edu/course/course";
 import teacher from "@/api/edu/teacher/teacher";
+import subject from "@/api/edu/subject/subject";
+
 export default {
   data() {
     return {
       CourseInfo: {
         title: "",
+        teacherId: "",
+        subjectId: "",
+        subjectParentId: "",
         lessonNum: 1,
         description: "",
         price: 1,
+        cover: "/static/01.jpg",
+      },
+      //如果需要改变data的key，需要加props属性。在props属性中改变data中的默认值
+      data: [
+        {
+          id: "",
+          title: "",
+          children: [{}],
+        },
+      ],
+      defaultProps: {
+        children: "children",
+        label: "title",
+        value: "id",
       },
       //接受所有讲师
       eduTeacherList: [],
-      name: '',
+      name: "",
       saveBtnDisabled: false,
+      BASE_API: process.env.BASE_API,
     };
   },
   methods: {
-    allEduTeacherList(){
-      teacher.getEduteacherList()
-      .then(res => {
-        this.eduTeacherList = res.data.eduTeacherList;
-        //console.log(res);
-      })
-      .catch(error => {
-        console.log(error);
-      })
+    handleAvatarSuccess(res, file) {
+      //this.CourseInfo.cover = URL.createObjectURL(file.raw);
+      this.CourseInfo.cover = res.data.imageUrl;
+      //console.log(this.CourseInfo)
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
+    //联级选择器选择好数据后。对数据进行封装
+    handleChange(value) {
+      this.CourseInfo.subjectId = value[1];
+      this.CourseInfo.subjectParentId = value[0];
+      //console.log(this.CourseInfo.subjectId);
+    },
+    //课程分类。实现联级效果
+    getSubjectList() {
+      subject
+        .getAllSubject()
+        .then((res) => {
+          this.data = res.data.data;
+          //console.log(this.data)
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    //查询所有讲师姓名
+    allEduTeacherList() {
+      teacher
+        .getEduteacherList()
+        .then((res) => {
+          this.eduTeacherList = res.data.eduTeacherList;
+          //console.log(res);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     addCourseInfo(CourseInfo) {
       course
@@ -105,12 +213,14 @@ export default {
           console.log(error);
         });
     },
+    //下一步按钮
     next() {
       this.addCourseInfo(this.CourseInfo);
     },
   },
   mounted: function () {
     this.allEduTeacherList();
+    this.getSubjectList();
   },
 };
 </script>
