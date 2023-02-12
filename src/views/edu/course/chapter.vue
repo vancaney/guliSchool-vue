@@ -12,30 +12,62 @@
       <el-step title="最终发布"></el-step>
     </el-steps>
 
+    <ul>
+      <li v-for="chapterVideo in allChapterVideo" :key="chapterVideo.id">
+        {{chapterVideo.title}}
+        <ul>
+          <li v-for="video in chapterVideo.children" :key="video.id">
+            {{video.title}}
+          </li>
+        </ul>
+      </li>
+    </ul>
+
     <el-form label-width="120px">
       <el-form-item>
         <el-button @click="previous">上一步</el-button>
-        <el-button :disabled="saveBtnDisable" type="primary" @click="next">下一步</el-button>
+        <el-button :disabled="saveBtnDisable" type="primary" @click="next"
+          >下一步</el-button
+        >
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+import chapter from "@/api/edu/chapter/chapter";
 export default {
   data() {
     return {
-        saveBtnDisabled: false,
+      allChapterVideo: [],
+      courseId: "",
+      saveBtnDisabled: false,
     };
   },
   methods: {
-    previous(){
-        this.$router.push({path:'/course/addCourse/1'});
+    eduChapterList() {
+      chapter
+        .getEduChapterList(this.courseId)
+        .then((res) => {
+          this.allChapterVideo = res.data.allChapterVideo;
+          console.log(res.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    previous() {
+      this.$router.push({ path: "/course/addCourse/1" });
     },
     next() {
-        this.$router.push({path:'/course/publish/1'});
+      this.$router.push({ path: "/course/publish/1" });
     },
   },
-  mounted: function () {},
+  mounted: function () {
+    if (this.$route.params && this.$route.params.id) {
+      this.courseId = this.$route.params.id;
+      this.eduChapterList();
+    }
+  },
 };
 </script>
