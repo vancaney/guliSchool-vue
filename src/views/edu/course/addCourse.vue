@@ -39,6 +39,7 @@
           :options="data"
           @change="handleChange"
           :props="defaultProps"
+          v-model="value"
         ></el-cascader>
       </el-form-item>
 
@@ -122,6 +123,7 @@ export default {
   data() {
     return {
       CourseInfo: {
+        id: "",
         title: "",
         teacherId: "",
         subjectId: "",
@@ -149,6 +151,8 @@ export default {
       name: "",
       saveBtnDisabled: false,
       BASE_API: process.env.BASE_API,
+      isInsert: true,
+      value: [],
     };
   },
   methods: {
@@ -181,7 +185,7 @@ export default {
         .getAllSubject()
         .then((res) => {
           this.data = res.data.data;
-          //console.log(this.data)
+          //console.log(this.data);
         })
         .catch((error) => {
           console.log(error);
@@ -199,6 +203,7 @@ export default {
           console.log(error);
         });
     },
+    //添加课程信息
     addCourseInfo(CourseInfo) {
       course
         .addCourseInfo(CourseInfo)
@@ -215,10 +220,42 @@ export default {
     },
     //下一步按钮
     next() {
-      this.addCourseInfo(this.CourseInfo);
+      if(this.isInsert)
+        this.addCourseInfo(this.CourseInfo);
+      else
+        this.updateCourseInfo(this.CourseInfo);
     },
+    //查询课程信息
+    getCourseInfoByCourseId() {
+      course
+        .getCourseInfoById(this.CourseInfo.id)
+        .then((res) => {
+          this.CourseInfo = res.data.CourseInfo;
+          this.value[1] = this.CourseInfo.subjectId;
+          this.value[0] = this.CourseInfo.subjectParentId;
+          //console.log(this.CourseInfo);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    //更新courseInfo
+    updateCourseInfo(CourseInfo){
+      course.updateCourseInfo(CourseInfo)
+      .then(res => {
+        this.$message({
+            type: "success",
+            message: "添加课程信息成功",
+          });3
+      })
+    }
   },
   mounted: function () {
+    if (this.$route.params && this.$route.params.id) {
+      this.CourseInfo.id = this.$route.params.id;
+      this.getCourseInfoByCourseId();
+      this.isInsert = false;
+    }
     this.allEduTeacherList();
     this.getSubjectList();
   },

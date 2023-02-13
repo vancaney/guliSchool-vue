@@ -57,7 +57,7 @@ export default {
         });
     },
     previous() {
-      this.$router.push({ path: "/course/addCourse/1" });
+      this.$router.push({ path: "/course/addCourse/" + this.courseId });
     },
     next() {
       this.$router.push({ path: "/course/publish/1" });

@@ -9,4 +9,17 @@ export default {
             data: CourseInfo
         })
     },
+    getCourseInfoById(courseId){
+        return request({
+            url: `/eduCourse/getCourseInfoByCourseId/${courseId}`,
+            method: 'get'
+        })
+    },
+    updateCourseInfo(CourseInfo){
+        return request({
+            url: `/eduCourse/updateCourseInfo`,
+            method: 'post',
+            data: CourseInfo
+        })
+    }
 }
