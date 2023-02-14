@@ -246,7 +246,7 @@ export default {
         this.$message({
             type: "success",
             message: "添加课程信息成功",
-          });3
+          });
       })
     }
   },
