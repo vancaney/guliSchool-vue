@@ -21,5 +21,17 @@ export default {
             method: 'post',
             data: CourseInfo
         })
+    },
+    selectCourseInfoVoByCourseId(courseId){
+        return request({
+            url: `/eduCourse/selectCoursePublishVoByCourseId/${courseId}`,
+            method: 'get'
+        })
+    },
+    updateCourseStatus(courseId){
+        return request({
+            url: `/eduCourse/updateCourseStatus/${courseId}`,
+            method: 'post'
+        })
     }
 }

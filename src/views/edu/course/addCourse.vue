@@ -71,7 +71,7 @@
         <el-input v-model="CourseInfo.description"></el-input>
       </el-form-item>
 
-      <el-form-item label="课时价格">
+      <el-form-item label="课时价格¥">
         <el-input-number v-model="CourseInfo.price" :min="1"></el-input-number>
       </el-form-item>
 
@@ -220,10 +220,8 @@ export default {
     },
     //下一步按钮
     next() {
-      if(this.isInsert)
-        this.addCourseInfo(this.CourseInfo);
-      else
-        this.updateCourseInfo(this.CourseInfo);
+      if (this.isInsert) this.addCourseInfo(this.CourseInfo);
+      else this.updateCourseInfo(this.CourseInfo);
     },
     //查询课程信息
     getCourseInfoByCourseId() {
@@ -240,15 +238,15 @@ export default {
         });
     },
     //更新courseInfo
-    updateCourseInfo(CourseInfo){
-      course.updateCourseInfo(CourseInfo)
-      .then(res => {
+    updateCourseInfo(CourseInfo) {
+      course.updateCourseInfo(CourseInfo).then((res) => {
         this.$message({
-            type: "success",
-            message: "添加课程信息成功",
-          });
-      })
-    }
+          type: "success",
+          message: "添加课程信息成功",
+        });
+        this.$router.push({ path: "/course/chapter/" + res.data.id });
+      });
+    },
   },
   mounted: function () {
     if (this.$route.params && this.$route.params.id) {
