@@ -33,5 +33,24 @@ export default {
             url: `/eduCourse/updateCourseStatus/${courseId}`,
             method: 'post'
         })
+    },
+    getCourseList(){
+        return request({
+            url: `/eduCourse/courseList`,
+            method: 'get'
+        })
+    },
+    coutseListByPage(courseQueryResult){
+        return request({
+            url: `/eduCourse/courseListByPage`,
+            method: 'post',
+            data: courseQueryResult
+        })
+    },
+    deleteCourseById(courseId){
+        return request({
+            url: `/eduCourse/deleteCourseByCourseId/${courseId}`,
+            method: 'post'
+        })
     }
 }
