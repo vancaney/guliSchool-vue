@@ -69,6 +69,26 @@
             label="描述文字"
           ></el-input-number>
         </el-form-item>
+        <el-form-item label="上传视频" :label-width="formLabelWidth">
+          <el-upload
+            class="upload-demo"
+            :action="BASE_API + '/eduvod/edyVideo/uploadVideo'"
+            :before-upload="beforeUpload"
+            :on-success="handleSuccess"
+            :on-exceed="handleError"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :before-remove="beforeRemove"
+            multiple
+            :limit="1"
+            :file-list="fileList"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+            <div slot="tip" class="el-upload__tip">
+              只能上传视频文件，且不超过1GB。
+            </div>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="videoCancle((dialogForVideo = false))"
@@ -136,7 +156,7 @@
   </div>
 </template>
 
-<style>
+<style >
 .custom-tree-node {
   flex: 1;
   display: flex;
@@ -170,6 +190,8 @@ export default {
         title: "",
         isFree: "1",
         sort: 1,
+        videoSourceId: "",
+        videoOriginalName: "",
       },
       courseId: "",
       VideoId: "",
@@ -179,9 +201,66 @@ export default {
       display: false,
       isSave: true,
       formLabelWidth: "120px",
+      BASE_API: process.env.BASE_API,
+      fileList: [], // 已上传的视频文件列表
     };
   },
   methods: {
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    handleRemove(file, fileList) {
+      video
+        .deleteVodByVideoId(file.response.data.videoId)
+        .then((res) => {
+          this.$message({
+            type: "success",
+            message: "删除视频成功",
+          });
+          this.fileList = [];
+          this.video.videoSourceId = "";
+          this.video.videoOriginalName = "";
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+      console.log(file, fileList);
+    },
+    beforeUpload(file) {
+      const isVideo = file.type.startsWith("video/"); // 判断文件是否为视频类型
+      const isLt50M = file.size / 1024 / 1024 / 1024 < 1; // 判断文件大小是否小于1GB
+      const videoFormats = ["mp4", "avi", "mov", "wmv", "flv", "mkv"]; // 定义支持的视频格式
+      const format = file.name.split(".").pop(); // 获取文件后缀名
+
+      if (!isVideo) {
+        this.$message.error("请选择视频文件");
+        return false;
+      }
+
+      if (!isLt50M) {
+        this.$message.error("视频文件大小不能超过 1GB");
+        return false;
+      }
+
+      if (videoFormats.indexOf(format.toLowerCase()) === -1) {
+        this.$message.error(
+          `系统仅支持以下格式的视频文件: ${videoFormats.join(", ")}`
+        );
+        return false;
+      }
+
+      return true;
+    },
+    handleSuccess(response, file, fileList) {
+      this.video.videoSourceId = response.data.videoId;
+      this.video.videoOriginalName = file.name;
+      //console.log(response.data);
+    },
+    handleError(error, file) {
+      // 处理上传失败的响应数据
+      this.$message.error("如果要重新上传视频，请先删除原先已上传的视频。");
+    },
+
     //添加章节信息
     saveChapter() {
       if (this.chapter.id == "") {
@@ -207,8 +286,8 @@ export default {
     //课程dailog取消按钮
     cancle() {
       this.chapter = {
-        id: '',
-        title: '',
+        id: "",
+        title: "",
         sort: 1,
       };
     },
@@ -336,7 +415,7 @@ export default {
     //课时dailog取消按钮
     videoCancle() {
       this.video = {
-        isFree: '1',
+        isFree: "1",
         sort: 1,
       };
     },
@@ -345,7 +424,7 @@ export default {
     },
     next() {
       this.$router.push({ path: "/course/publish/" + this.courseId });
-    }
+    },
   },
   mounted: function () {
     if (this.$route.params && this.$route.params.id) {

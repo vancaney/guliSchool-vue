@@ -27,5 +27,11 @@ export default {
             url: `/eduvideo/deleteVideoById/${VideoId}`,
             method: 'post'
         })
+    },
+    deleteVodByVideoId(videoId){
+        return request({
+            url: `/eduvod/edyVideo/deleteUploadVideo/${videoId}`,
+            method: 'post'
+        })
     }
 }
