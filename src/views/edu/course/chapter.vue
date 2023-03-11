@@ -88,6 +88,7 @@
               只能上传视频文件，且不超过1GB。
             </div>
           </el-upload>
+           <el-progress :percentage="progress" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -391,6 +392,7 @@ export default {
               message: "添加课时成功",
             });
             this.eduChapterList();
+            this.fileList = [];
             this.video.id = "";
           })
           .catch((error) => {

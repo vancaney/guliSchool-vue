@@ -101,7 +101,7 @@ export default {
     };
   },
   created() {
-    console.log("publish created");
+    //console.log("publish created");
   },
   methods: {
     courseInfoList() {
@@ -116,11 +116,11 @@ export default {
         });
     },
     previous() {
-      console.log("previous");
+      //console.log("previous");
       this.$router.push({ path: "/course/chapter/" + this.courseId });
     },
     publish() {
-      console.log("publish");
+      //console.log("publish");
       course.updateCourseStatus(this.courseId).then((res) => {
         this.$message({
           type: "success",
